@@ -56,3 +56,6 @@ module top_module(	input clk,
 			2'h3: q=q3;
 		endcase
 endmodule
+
+/**************************/
+/*date:06/07/2022**********/

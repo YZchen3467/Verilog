@@ -86,3 +86,6 @@ module top_module(input p1a, p1b, p1c, p1d, p1e, p1f,
 	assign p1y = p1_abc_wire | p1_def_wire;
 	assign p2y = p2_ab_wire | p2_cd_wire;
 endmodule
+
+/*******************************/
+/*date:06/06/2022**********/

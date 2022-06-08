@@ -1,3 +1,3 @@
 # Verilog
-Just Verilog exercise /n
+Just Verilog exercise  
 Learned Verilog by HDLBits

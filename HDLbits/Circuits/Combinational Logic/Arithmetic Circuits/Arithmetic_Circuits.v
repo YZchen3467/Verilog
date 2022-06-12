@@ -121,3 +121,36 @@ module bcd_fadd (input [3:0] a,
 	Full_adder FA2 (x[2], y[2], cout_l[1], cout_l[2], sum[2]);
 	Full_adder FA3 (x[3], y[3], cout_l[2], cout_l[3], sum[3]);
 endmodule
+
+////////////////////////////////
+
+//4-digit BCD adder
+module top_module(	input [15:0] a, b,
+					input cin,
+					output cout,
+					output [15:0] sum);
+	wire [3:0] cout_1;
+	
+	genvar i;
+	generate
+		for(i=0; i<4; i=i+1) begin: BCD_100bits
+			if(i == 0) begin
+				bcd_fadd condi_0(.a(a[3:0]),
+								 .b(b[3:0]),
+								 .cin(cin),
+								 .cout(cout_1[0]),
+								 .sum(sum[3:0])
+								);
+			end
+			else begin
+				bcd_fadd condi_i(.a(a[i*4+3:i*4]),
+								 .b(b[i*4+3:i*4]),
+								 .cin(cout_1[i-1]),
+								 .cout(cout_1[i]),
+								 .sum(sum[i*4+3:i*4])
+								);
+			end			
+		end
+		assign cout = cout_1[3];
+	endgenerate
+endmodule

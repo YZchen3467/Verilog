@@ -236,3 +236,44 @@ module top_module (
 endmodule
 
 //////////////////////////
+
+//Detect an edge
+module top_module (
+    input clk,
+    input [7:0] in,
+    output [7:0] pedge
+);
+	reg [7:0] D_detection;
+	always@(posedge clk) begin
+		D_detection <= in;
+		pedge <= in&~D_detection;
+	end
+endmodule
+
+///////////////////////////
+
+//Detect both edge
+module top_module (
+    input clk,
+    input [7:0] in,
+    output [7:0] anyedge
+);
+    reg [7:0] D_detection;
+    always@(posedge clk) begin
+		D_detection <= in;
+		anyedge <= in^D_detection;
+	end
+endmodule
+
+///////////////////////////
+
+//Edge capture register
+module top_module (
+    input clk,
+    input reset,
+    input [31:0] in,
+    output [31:0] out
+);
+	
+	
+endmodule

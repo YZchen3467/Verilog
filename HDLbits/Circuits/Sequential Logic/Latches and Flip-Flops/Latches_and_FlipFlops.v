@@ -246,7 +246,7 @@ module top_module (
 	reg [7:0] D_detection;
 	always@(posedge clk) begin
 		D_detection <= in;
-		pedge <= in&~D_detection;
+		pedge <= in&~D_detection;//posedge; if negedge is ~in&D_detection
 	end
 endmodule
 
@@ -267,13 +267,43 @@ endmodule
 
 ///////////////////////////
 
-//Edge capture register
+//Edge capture register 
 module top_module (
     input clk,
     input reset,
     input [31:0] in,
     output [31:0] out
 );
+	reg [31:0] D_detection;
+	always@(posedge clk) begin
+		D_detection <= in; 
+	end
 	
-	
+	always@(posedge clk) begin
+		if(reset)
+			out <= 32'b0;
+		else
+			out <= ~in & D_detection | out;
+	end
+endmodule //need to study more
+
+/////////////////////////////
+
+//Dual-edge-triggered flip-flop
+module top_module (
+    input clk,
+    input d,
+    output q
+);
+    reg q_up;
+    reg q_down;
+	always@(posedge clk) begin
+		q_up <= d;
+	end
+	always@(negedge clk) begin
+        q_down <= d;
+	end
+    
+    assign q = clk ? q_up:q_down;
 endmodule
+

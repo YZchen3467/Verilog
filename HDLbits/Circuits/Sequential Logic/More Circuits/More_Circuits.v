@@ -63,17 +63,17 @@ module top_module(
 	
 	integer i, j;
 	always@(*) begin
-		for(i=0; i<16; i++) begin
-			for(j=0; j<16; j++) begin
-				if(i==0 && j==0)//top left 
-					sum = q_2d[15][1]+q_2d[15][0]+q_2d[15][15]+q_2d[0][1]+q_2d[0][15]+q_2d[1][0]+q_2d[1][1]+q_2d[1][15];
-				else if(i==0 && j==0)//top right
-					sum = sum=q_2d[0][0]+q_2d[0][14]+q_2d[15][0]+q_2d[15][14]+q_2d[15][15]+q_2d[1][0]+q_2d[1][14]+q_2d[1][15];
-				else if(i==15 && j==0)//bottom left
-                    sum = q_2d[15][1]+q_2d[15][15]+q_2d[14][0]+q_2d[14][15]+q_2d[14][1]+q_2d[0][0]+q_2d[0][1]+q_2d[0][15];
+		for(i=0; i<16; i=i+1) begin
+			for(j=0; j<16; j=j+1) begin
+				if(i==0 && j==0)//top left
+                    sum=q_2d[15][1]+q_2d[15][0]+q_2d[15][15]+q_2d[0][1]+q_2d[0][15]+q_2d[1][0]+q_2d[1][1]+q_2d[1][15];
+                else if(i==0 && j==15)//top right
+                    sum=q_2d[0][0]+q_2d[0][14]+q_2d[15][0]+q_2d[15][14]+q_2d[15][15]+q_2d[1][0]+q_2d[1][14]+q_2d[1][15];
+                else if(i==15 && j==0)//bottom left
+                    sum=q_2d[15][1]+q_2d[15][15]+q_2d[14][0]+q_2d[14][15]+q_2d[14][1]+q_2d[0][0]+q_2d[0][1]+q_2d[0][15];
                 else if(i==15 && j==15)//bottom right
-                    sum = q_2d[15][0]+q_2d[15][14]+q_2d[14][15]+q_2d[14][0]+q_2d[14][14]+q_2d[0][0]+q_2d[0][15]+q_2d[0][14];
-				else if(i==0)//top border
+                    sum=q_2d[15][0]+q_2d[15][14]+q_2d[14][15]+q_2d[14][0]+q_2d[14][14]+q_2d[0][0]+q_2d[0][15]+q_2d[0][14];
+                else if(i==0)//top border
                     sum=q_2d[0][j-1]+q_2d[0][j+1]+q_2d[1][j-1]+q_2d[1][j]+q_2d[1][j+1]+q_2d[15][j-1]+q_2d[15][j]+q_2d[15][j+1];
                 else if(i==15)//bottom border
                     sum=q_2d[15][j-1]+q_2d[15][j+1]+q_2d[0][j-1]+q_2d[0][j]+q_2d[0][j+1]+q_2d[14][j-1]+q_2d[14][j]+q_2d[14][j+1];
@@ -83,8 +83,35 @@ module top_module(
                     sum=q_2d[i][0]+q_2d[i][14]+q_2d[i-1][0]+q_2d[i-1][14]+q_2d[i-1][15]+q_2d[i+1][0]+q_2d[i+1][14]+q_2d[i+1][15];
                 else  //mid item
                     sum=q_2d[i-1][j]+q_2d[i-1][j-1]+q_2d[i-1][j+1]+q_2d[i][j-1]+q_2d[i][j+1]+q_2d[i+1][j]+q_2d[i+1][j-1]+q_2d[i+1][j+1];
+				
+				case(sum)
+					2:q_next[i][j] = q_2d[i][j];
+					3:q_next[i][j] = 1'b1;
+					default: q_next[i][j] = 0;
+				endcase
 			end
 		end
 	end
+	
+	always@(posedge clk) begin
+		if(load) begin
+			for(i=0; i<16; i=i+1) begin
+				for(j=0; j<16; j=j+1) begin
+					q_2d[i][j] <= data[i*16+j];
+				end
+			end
+		end
+		else
+			q_2d <= q_next;
+	end
+	
+	genvar m, n;
+	generate
+		for(m=0; m<16; m = m+1) begin: line_reverse
+			for(n=0; n<16; n = n+1) begin: list_reverse
+				assign q[m*16+n] = q_2d[m][n];
+			end
+		end
+	endgenerate
 	
 endmodule

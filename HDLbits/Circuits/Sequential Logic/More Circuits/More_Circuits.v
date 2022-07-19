@@ -90,7 +90,7 @@ module top_module(
 					default: q_next[i][j] = 0;
 				endcase
 			end
-		end
+		ends
 	end
 	
 	always@(posedge clk) begin

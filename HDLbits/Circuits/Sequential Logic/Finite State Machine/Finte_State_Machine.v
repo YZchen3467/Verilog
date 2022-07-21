@@ -304,4 +304,146 @@ module top_module(
 	output out
 );
 	
+	parameter A = 2'b00, B = 2'b01, C = 2'b10, D = 2'b11;
+	reg [1:0] current_state, next_state;
+	
+	always@(posedge clk or posedge areset) begin
+		if(areset)
+			current_state <= A;
+		else
+			current_state <= next_state;
+	end
+	
+	always@(*) begin
+		case(current_state)
+			A: begin
+				if(in == 1'b0)
+					next_state = A;
+				else if(in == 1'b1)
+					next_state = B;
+			end
+			
+			B: begin
+				if(in == 1'b0)
+					next_state = C;
+				else if(in == 1'b1)
+					next_state = B;
+			end
+			
+			C: begin
+				if(in == 1'b0)
+					next_state = A;
+				else if(in == 1'b1)
+					next_state = D;
+			end
+			
+			D: begin
+				if(in == 1'b0)
+					next_state = C;
+				else if(in == 1'b1)
+					next_state = B;
+			end
+			
+			default:
+				next_state = current_state;
+		endcase
+	end
+	
+	 always@(posedge clk or posedge areset)begin
+        if(areset)begin
+        	out <= 1'b0;
+        end
+        else if(next_state == A)begin
+            out <= 1'b0;
+        end
+        else if(next_state == B)begin
+            out <= 1'b0;
+        end
+        else if(next_state == C)begin
+            out <= 1'b0;
+        end
+        else if(next_state == D)begin
+            out <= 1'b1;
+        end
+    end
+	
 endmodule
+
+///////////////////////////////////////////
+
+//Simple FSM 3(synchronous)
+module top_module(
+	input clk,
+	input in,
+	input reset,
+	output out
+);
+	
+	parameter A = 2'b00, B = 2'b01, C = 2'b10, D = 2'b11;
+	reg [1:0] current_state, next_state;
+	
+	always@(posedge clk) begin
+		if(reset)
+			current_state <= A;
+		else
+			current_state <= next_state;
+	end
+	
+	always@(*) begin
+		case(current_state)
+			A: begin
+				if(in == 1'b0)
+					next_state = A;
+				else if(in == 1'b1)
+					next_state = B;
+			end
+			
+			B: begin
+				if(in == 1'b0)
+					next_state = C;
+				else if(in == 1'b1)
+					next_state = B;
+			end
+			
+			C: begin
+				if(in == 1'b0)
+					next_state = A;
+				else if(in == 1'b1)
+					next_state = D;
+			end
+			
+			D: begin
+				if(in == 1'b0)
+					next_state = C;
+				else if(in == 1'b1)
+					next_state = B;
+			end
+			
+			default:
+				next_state = current_state;
+		endcase
+	end
+	
+	 always@(posedge clk)begin
+        if(reset)begin
+        	out <= 1'b0;
+        end
+        else if(next_state == A)begin
+            out <= 1'b0;
+        end
+        else if(next_state == B)begin
+            out <= 1'b0;
+        end
+        else if(next_state == C)begin
+            out <= 1'b0;
+        end
+        else if(next_state == D)begin
+            out <= 1'b1;
+        end
+    end
+	
+endmodule
+
+//////////////////////////////////////////
+
+//Design a Moore FSM
